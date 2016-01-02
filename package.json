@@ -1,0 +1,11 @@
+{
+  "name": "fieldbook-slackbot",
+  "version": "0.1.0",
+  "description": "Experimental Fieldbook-based Slackbot",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:fieldbook/fieldbook-slackbot.git"
+  },
+  "license": "MIT",
+  "author": "Jason Crawford <jason@fieldbook.com>"
+}
