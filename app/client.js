@@ -18,6 +18,10 @@ class Client {
   list(sheet) {
     return this.request(sheet, {method: 'GET'});
   }
+
+  show(sheet, id) {
+    return this.request(sheet + '/' + id, {method: 'GET'});
+  }
 }
 
 module.exports = Client;

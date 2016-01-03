@@ -9,10 +9,26 @@ router.client = new Client({
   secret: process.env['FIELDBOOK_SECRET'],
 })
 
+var sheet = 'items';
+var fields = [
+  {key: 'id', name: "ID"},
+  {key: 'name', name: "Name"},
+  {key: 'pri', name: "Pri"},
+  {key: 'status', name: "Status"},
+  {key: 'owner', name: "Owner"},
+];
+
 var handlers = {
   list: function () {
-    return router.client.list('items').then(function (items) {
+    return router.client.list(sheet).then(function (items) {
       var lines = items.map(row => `${row.id} ${row.name}`);
+      return lines.join('\n');
+    })
+  },
+
+  show: function (id) {
+    return router.client.show(sheet, id).then(function (item) {
+      var lines = fields.map(f => `${f.name}: ${item[f.key]}`);
       return lines.join('\n');
     })
   }
@@ -34,7 +50,9 @@ router.post('/', function (req, res, next) {
   console.log(`got command from ${body.user_name}: ${body.command} ${body.text}`);
 
   var text = body.text || '';
-  var action = text.split(/\s+/)[0];
+  var words = text.split(/\s+/);
+  var action = words[0];
+  var args = words.slice(1);
   action = action || defaultAction;
 
   var handler = handlers[action];
@@ -44,7 +62,7 @@ router.post('/', function (req, res, next) {
     return;
   }
 
-  handler().then(function (reply) {
+  handler.apply(null, args).then(function (reply) {
     res.send(reply);
   }).fail(function (error) {
     console.error('error handling command', error);

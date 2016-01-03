@@ -27,17 +27,15 @@ function makeRequest(body) {
 
 var response;
 
+before(function () {
+  mockClient.setMockRecords('items', [
+    {id: 1, name: "Write interface design", pri: 1, status: "done", owner: "Jason"},
+    {id: 2, name: "Draft industry analysis", pri: 2, status: "working", owner: "Ben"},
+  ])
+})
+
 describe('List', function () {
-  var expectedText;
-
-  before(function () {
-    mockClient.setMockRecords('items', [
-      {id: 1, name: "Foo"},
-      {id: 2, name: "Bar"},
-    ])
-
-    expectedText = "1 Foo\n2 Bar";
-  })
+  var expectedText = "1 Write interface design\n2 Draft industry analysis";
 
   describe('when you send the default command', function () {
     before(function () {
@@ -56,6 +54,18 @@ describe('List', function () {
 
     it('should return a list of records', function () {
       return expect(response.get('body')).to.eventually.equal(expectedText);
+    })
+  })
+})
+
+describe('Show', function () {
+  describe('when you show an item', function () {
+    before(function () {
+      response = makeRequest({text: 'show 1'});
+    })
+
+    it('should return item detail', function () {
+      return expect(response.get('body')).eventually.equal("ID: 1\nName: Write interface design\nPri: 1\nStatus: done\nOwner: Jason");
     })
   })
 })
