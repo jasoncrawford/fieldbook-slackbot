@@ -9,8 +9,18 @@ app.get('/', function (req, res) {
   res.send("Fieldbook Slackbot");
 })
 
+app.use('/commands', function (req, res, next) {
+  var token = req.body && req.body.token;
+  if (token === process.env['SLACK_COMMAND_TOKEN']) {
+    next();
+  } else {
+    res.status(403).send("Error: Request token doesn't match SLACK_COMMAND_TOKEN");
+  }
+})
+
 app.post('/commands', function (req, res) {
-  console.log('got command', req.body);
+  var body = req.body;
+  console.log(`got command from ${body.user_name}: ${body.command} ${body.text}`);
   res.send("OK");
 })
 
