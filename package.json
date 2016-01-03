@@ -10,7 +10,8 @@
   "author": "Jason Crawford <jason@fieldbook.com>",
   "dependencies": {
     "body-parser": "^1.14.2",
-    "express": "^4.13.3"
+    "express": "^4.13.3",
+    "requestify": "^0.1.17"
   },
   "engines": {
     "node": "v5.3.0"
