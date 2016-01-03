@@ -3,7 +3,7 @@ var Client = require('./client');
 
 var router = express.Router();
 
-var client = new Client({
+router.client = new Client({
   bookId: '568896651bfd500300fa9a5f',
   key: process.env['FIELDBOOK_KEY'],
   secret: process.env['FIELDBOOK_SECRET'],
@@ -22,7 +22,7 @@ router.post('/', function (req, res, next) {
   var body = req.body;
   console.log(`got command from ${body.user_name}: ${body.command} ${body.text}`);
 
-  client.list('items').then(function (items) {
+  router.client.list('items').then(function (items) {
     var lines = items.map(row => `${row.id} ${row.name}`);
     res.send(lines.join('\n'));
   }).fail(function (error) {
