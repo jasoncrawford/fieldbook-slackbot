@@ -5,7 +5,7 @@ var requestify = require('requestify');
 
 var MockClient = require('./mockClient');
 var app = require('../app');
-var commands = require('../commands');
+var commands = require('../app/commands');
 
 chai.use(chaiAsPromised);
 var expect = chai.expect;
