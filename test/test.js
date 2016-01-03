@@ -27,35 +27,63 @@ function makeRequest(body) {
 
 var response;
 
-describe('when you send a command', function () {
+describe('List', function () {
+  var expectedText;
+
   before(function () {
     mockClient.setMockRecords('items', [
       {id: 1, name: "Foo"},
       {id: 2, name: "Bar"},
     ])
+
+    expectedText = "1 Foo\n2 Bar";
   })
 
-  before(function () {
-    response = makeRequest();
+  describe('when you send the default command', function () {
+    before(function () {
+      response = makeRequest();
+    })
+
+    it('should return a list of records', function () {
+      return expect(response.get('body')).to.eventually.equal(expectedText);
+    })
   })
 
-  it('should return a list of records', function () {
-    return expect(response.get('body')).to.eventually.equal("1 Foo\n2 Bar");
+  describe('when you send an explicit list command', function () {
+    before(function () {
+      response = makeRequest({text: 'list'});
+    })
+
+    it('should return a list of records', function () {
+      return expect(response.get('body')).to.eventually.equal(expectedText);
+    })
   })
 })
 
-describe('when you send a command with a bad token', function () {
-  before(function () {
-    response = makeRequest({token: 'bogus'});
+describe('Errors', function () {
+  describe('when you send an unknown command', function () {
+    before(function () {
+      response = makeRequest({text: 'bogus'});
+    })
+
+    it('should return an error', function () {
+      return expect(response.get('body')).to.eventually.match(/don't know/);
+    })
   })
 
-  it('should return an error', function () {
-    return expect(response).rejected;
-  })
+  describe('when you send a command with a bad token', function () {
+    before(function () {
+      response = makeRequest({token: 'bogus'});
+    })
 
-  it('should return 403 Forbidden', function () {
-    return response.fail(function (response) {
-      expect(response.getCode()).equal(403);
+    it('should return an error', function () {
+      return expect(response).rejected;
+    })
+
+    it('should return 403 Forbidden', function () {
+      return response.fail(function (response) {
+        expect(response.getCode()).equal(403);
+      })
     })
   })
 })
